@@ -79,121 +79,7 @@ Ecrire la classe `Point3D` accompagnée des tests unitaires.
 
 ## 1) Diagramme de classes
 
-@startuml
-skinparam classAttributeIconSize 0
-hide empty members
-
-' =========================
-' Exceptions
-' =========================
-class InvalidVacheException <<exception>>
-
-' =========================
-' Enum
-' =========================
-enum TypeNourriture {
-  MARGUERITE
-  HERBE
-  FOIN
-  PAILLE
-  CEREALES
-}
-
-' =========================
-' Classes métier
-' =========================
-class Vache {
-  ' --- constantes ---
-  {static} AGE_MAX: int
-  {static} POIDS_MAX: float
-  {static} PANSE_MAX: float
-  {static} RENDEMENT_RUMINATION: float
-  {static} COEFFICIENT_NUTRITIONNEL: dict<TypeNourriture, float>
-  {static} _NEXT_ID: int
-
-  ' --- état ---
-  - _id: int
-  - _petitNom: str
-  - _age: int
-  - _poids: float
-  - _panse: float
-
-  ' --- API ---
-  + id: int <<property>>
-  + petitNom: str <<property>>
-  + age: int <<property>>
-  + poids: float <<property>>
-  + panse: float <<property>>
-
-  + __str__(): str
-  + brouter(quantite: float, nourriture: Any = None): void
-  + ruminer(): float
-  + vieillir(): void
-
-  ' --- hooks (template method) ---
-  # _calculer_lait(panse_avant: float): float
-  # _stocker_lait(lait: float): void
-  # _post_rumination(panse_avant: float, lait: float): void
-
-  ' --- validation / utilitaires ---
-  # _ajouter_panse(quantite: float): void
-  # _valider_rumination_possible(): void
-  # _valider_etat(): vid:intoid
-}
-
-class VacheALait {
-  {static} RENDEMENT_LAIT: float
-
-  - _lait_disponible: float
-  - _lait_total_produit: float
-  - _lait_total_traite: float
-
-  + lait_disponible: float <<property>>
-  + lait_total_produit: float <<property>>
-  + lait_total_traite: float <<property>>
-
-  + traire(litres: float): float
-
-  # _calculer_lait(panse_avant: float): float
-  # _stocker_lait(lait: float): void
-}
-
-class PieNoire {
-  {static} COEFFICIENT_LAIT_PAR_NOURRITURE: dict<TypeNourriture, float>
-
-  - _ration: dict<TypeNourriture, float>
-  - _nb_taches_blanches: int
-  - _nb_taches_noires: int
-
-  + ration: dict<TypeNourriture, float> <<property>>
-  + nb_taches_blanches: int <<property>>
-  + nb_taches_noires: int <<property>>
-
-  + brouter(quantite: float, nourriture: TypeNourriture = None): void
-  + __str__(): str
-
-  # _calculer_lait(panse_avant: float): float
-  # _post_rumination(panse_avant: float, lait: float): void
-  # _valider_etat(): void
-  # _valider_taches(): void
-}
-
-' =========================
-' Héritage
-' =========================
-Vache <|-- VacheALait
-VacheALait <|-- PieNoire
-
-' =========================
-' Relations
-' =========================
-PieNoire "1" o-- "0..*" TypeNourriture : _ration\n(dict)
-
-Vache ..> InvalidVacheException : lève
-VacheALait ..> InvalidVacheException : lève
-PieNoire ..> InvalidVacheException : lève
-
-@enduml
+Voir document accompagnant le sujet.
 ---
 
 ## 2) Données métier (attributs attendus)
@@ -263,9 +149,17 @@ Règles de rumination (communes) :
 
 ## 6) Coefficients selon le type de nourriture (nutrition)
 
-Une table de coefficients nutritionnels est fournie au niveau `Vache` :
+Une table de coefficients nutritionnels est fournie au niveau `PieNoire` :
 
-- `COEFFICIENT_NUTRITIONNEL: dict[TypeNourriture, float]`
+```python
+COEFFICIENT_NUTRITIONNEL: dict[TypeNourriture, float] = {
+        TypeNourriture.MARGUERITE: 1.1,
+        TypeNourriture.HERBE: 1.0,
+        TypeNourriture.FOIN: 0.9,
+        TypeNourriture.PAILLE: 0.4,
+        TypeNourriture.CEREALES: 1.3,
+    }
+```
 
 ---
 
@@ -298,35 +192,10 @@ Elle décrit le déroulement complet d’un cycle de rumination. Les sous-classe
 7. Exécuter un post-traitement éventuel (*hook*)
 8. Retourner la quantité de lait produite
 
-### Diagramme de séquence (PlantUML)
+### Diagramme de séquence
 
-```plantuml
-@startuml
-actor "Client" as Client
-participant Vache
-participant "VacheALait / PieNoire" as SubClass
+Voir document acoompagnant le sujet.
 
-Client -> Vache : ruminer()
-
-activate Vache
-Vache -> Vache : _valider_rumination_possible()
-Vache -> Vache : panse_avant = _panse
-Vache -> Vache : gain = RENDEMENT_RUMINATION * panse_avant
-Vache -> Vache : _poids += gain
-
-Vache -> SubClass : _calculer_lait(panse_avant)
-SubClass --> Vache : lait
-
-Vache -> SubClass : _stocker_lait(lait)
-
-Vache -> Vache : _panse = 0.0
-
-Vache -> SubClass : _post_rumination(panse_avant, lait)
-
-Vache --> Client : lait
-deactivate Vache
-@enduml
-```
 
 > Règle de conception : `ruminer()` ne doit jamais être redéfinie dans les sous-classes.
 
@@ -353,14 +222,3 @@ deactivate Vache
 | `VacheALait` | `RENDEMENT_LAIT` | `1.1` | litres produits par kg ruminé (λ) |
 | `PieNoire` | `COEFFICIENT_LAIT_PAR_NOURRITURE` | *(dict)* | coefficient lait par `TypeNourriture` (μ) |
 
-* Coefficient nutritionnel pour la PieNoire :
-
-```python
-COEFFICIENT_NUTRITIONNEL: dict[TypeNourriture, float] = {
-        TypeNourriture.MARGUERITE: 1.1,
-        TypeNourriture.HERBE: 1.0,
-        TypeNourriture.FOIN: 0.9,
-        TypeNourriture.PAILLE: 0.4,
-        TypeNourriture.CEREALES: 1.3,
-    }
-```
