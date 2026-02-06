@@ -1,0 +1,2 @@
+class InvalidVacheException(Exception):
+    pass
