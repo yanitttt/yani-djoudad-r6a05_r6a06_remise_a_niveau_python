@@ -1,7 +1,6 @@
 from src.vaches.domain.errors.exceptions import InvalidVacheException
 
 class Vache:
-    # Constantes demandées par les tests
     AGE_MAX = 25
     PANSE_MAX = 50.0
     RENDEMENT_RUMINATION = 0.25
@@ -34,19 +33,15 @@ class Vache:
         self.panse += quantite
 
     def ruminer(self):
-        # Validation : impossible de ruminer le ventre vide
         if self.panse <= 0:
             raise InvalidVacheException()
 
-        # Calcul du gain de poids
         gain = self.panse * self.RENDEMENT_RUMINATION
         self.poids += gain
 
-        # La panse est vidée
         self.panse = 0.0
 
     def vieillir(self):
-        # Validation : mort de vieillesse si > AGE_MAX
         if self.age >= self.AGE_MAX:
             raise InvalidVacheException()
 
