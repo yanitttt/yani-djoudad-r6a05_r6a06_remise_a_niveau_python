@@ -17,7 +17,6 @@ def pie_ok() -> PieNoire:
     return PieNoire(
         petit_nom ="Bella",
         poids=520.0,
-        age=6,
         nb_taches_blanches=12,
         nb_taches_noires=18,
     )
@@ -51,28 +50,28 @@ def test_should_return_copy_of_ration_given_ration_property(pie_ok: PieNoire):
 def test_should_raise_invalid_vache_exception_given_non_positive_white_spots(val: int):
     # Arrange / Act / Assert
     with pytest.raises(InvalidVacheException):
-        PieNoire("Bella", 520.0, 6, nb_taches_blanches=val, nb_taches_noires=10)
+        PieNoire("Bella", 520.0, nb_taches_blanches=val, nb_taches_noires=10)
 
 
 @pytest.mark.parametrize("val", [0, -1])
 def test_should_raise_invalid_vache_exception_given_non_positive_black_spots(val: int):
     # Arrange / Act / Assert
     with pytest.raises(InvalidVacheException):
-        PieNoire("Bella", 520.0, 6, nb_taches_blanches=10, nb_taches_noires=val)
+        PieNoire("Bella", 520.0, nb_taches_blanches=10, nb_taches_noires=val)
 
 
 @pytest.mark.parametrize("val", ["12", 12.0, None])
 def test_should_raise_invalid_vache_exception_given_non_int_white_spots(val):
     # Arrange / Act / Assert
     with pytest.raises(InvalidVacheException):
-        PieNoire("Bella", 520.0, 6, nb_taches_blanches=val, nb_taches_noires=10)
+        PieNoire("Bella", 520.0, nb_taches_blanches=val, nb_taches_noires=10)
 
 
 @pytest.mark.parametrize("val", ["18", 18.0, None])
 def test_should_raise_invalid_vache_exception_given_non_int_black_spots(val):
     # Arrange / Act / Assert
     with pytest.raises(InvalidVacheException):
-        PieNoire("Bella", 520.0, 6, nb_taches_blanches=10, nb_taches_noires=val)
+        PieNoire("Bella", 520.0, nb_taches_blanches=10, nb_taches_noires=val)
 
 
 # -------------------------

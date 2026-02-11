@@ -13,7 +13,7 @@ class PieNoire(VacheALait):
         TypeNourriture.CEREALES: 2.0
     }
 
-    def __init__(self, petit_nom: str, poids: float, age: int, nb_taches_blanches: int, nb_taches_noires: int):
+    def __init__(self, petit_nom: str, poids: float, nb_taches_blanches: int, nb_taches_noires: int):
 
         if type(nb_taches_blanches) is not int or type(nb_taches_noires) is not int:
             raise InvalidVacheException()
@@ -21,7 +21,7 @@ class PieNoire(VacheALait):
         if nb_taches_blanches <= 0 or nb_taches_noires <= 0:
             raise InvalidVacheException()
 
-        super().__init__(petitNom=petit_nom, poids=poids, age=age)
+        super().__init__(petitNom=petit_nom, poids=poids)
 
         self.nb_taches_blanches = nb_taches_blanches
         self._nb_taches_noires = nb_taches_noires
